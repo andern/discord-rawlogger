@@ -8,7 +8,7 @@ const guilds = {}
 
 function getLogfile(evt) {
   const folder = process.env.LOGFOLDER;
-  const fmt = new Date().toISOString().substring(0, 10);
+  const fmt = new Date().toISOString().substring(0, 7);
   const guildId = evt.d.guild_id;
   return `${process.env.LOGFOLDER}/${guildId}/${fmt}.log`;
 }
