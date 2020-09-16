@@ -1,0 +1,12 @@
+{
+  "name": "discord-rawlogger",
+  "version": "1.0.0",
+  "description": "logs raw discord events to file",
+  "main": "index.js",
+  "license": "GPL-3.0-or-later",
+  "private": true,
+  "dependencies": {
+    "discord.js": "^12.3.1",
+    "dotenv": "^8.2.0"
+  }
+}
