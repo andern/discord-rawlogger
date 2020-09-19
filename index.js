@@ -6,16 +6,19 @@ const path = require('path');
 const client = new Discord.Client();
 const guilds = {}
 
-function getLogfile(evt) {
+function getLogfile(evt, guildId) {
   const folder = process.env.LOGFOLDER;
   const fmt = new Date().toISOString().substring(0, 7);
-  const guildId = evt.d.guild_id;
   return `${process.env.LOGFOLDER}/${guildId}/${fmt}.log`;
 }
 
-function write(evt) {
-  const logfile = getLogfile(evt);
-  const guildId = evt.d.guild_id;
+function getGuildId(evt) {
+  if (evt.t === 'GUILD_CREATE') return evt.d.id;
+  return evt.d.guild_id;
+}
+
+async function write(evt, guildId) {
+  const logfile = getLogfile(evt, guildId);
 
   if (guilds[guildId] == null || guilds[guildId].logfile !== logfile) {
     if (guilds[guildId] != null) {
@@ -31,6 +34,9 @@ function write(evt) {
     }
     console.info(`File ${logfile} has been opened`);
   }
+
+  if (evt.d.timestamp == null)
+    evt.d.timestamp = new Date();
 
   const txt = JSON.stringify(evt);
   guilds[guildId].stream.write(txt + '\n');
@@ -56,10 +62,10 @@ function ensureDir(filepath) {
 client.login(process.env.TOKEN);
 
 client.on('raw', (evt) => {
-  if (evt.t == null) return;
-  if (evt.d == null || evt.d.guild_id == null) return;
+  const guildId = getGuildId(evt);
+  if (guildId == null) return;
 
-  write(evt, evt.d.guild_id);
+  write(evt, guildId);
 });
 
 process.on('SIGTERM', () => {
