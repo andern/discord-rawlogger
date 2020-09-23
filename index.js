@@ -17,7 +17,7 @@ function getGuildId(evt) {
   return evt.d.guild_id;
 }
 
-async function write(evt, guildId) {
+function write(evt, guildId) {
   const logfile = getLogfile(evt, guildId);
 
   if (guilds[guildId] == null || guilds[guildId].logfile !== logfile) {
