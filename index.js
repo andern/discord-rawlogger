@@ -59,9 +59,13 @@ function ensureDir(filepath) {
   fs.mkdirSync(dirname, { recursive: true });
 }
 
-client.login(process.env.TOKEN);
+client.on('ready', () => {
+    console.log(`Logged in as ${client.user.tag}!`);
+});
 
 client.on('raw', (evt) => {
+  if (evt.op !== 0) return;
+
   const guildId = getGuildId(evt);
   if (guildId == null) return;
 
@@ -75,3 +79,5 @@ process.on('SIGTERM', () => {
 process.on('SIGINT', () => {
   kill();
 });
+
+client.login(process.env.TOKEN).catch(console.err);
